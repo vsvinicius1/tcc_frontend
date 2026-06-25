@@ -46,43 +46,6 @@ rails server
 # 5. Acesse no navegador
 #    http://localhost:3000
 ```
-```
-## Estrutura do Projeto
-
-```
-tcc_frontend/
-├── app/
-│   ├── controllers/
-│   │   ├── application_controller.rb     # Base + constantes de status
-│   │   ├── dashboard_controller.rb       # Dashboard c/ estatísticas
-│   │   ├── tccs_controller.rb            # CRUD de TCCs + upload PDF
-│   │   ├── alunos_controller.rb
-│   │   ├── professores_controller.rb
-│   │   ├── cursos_controller.rb
-│   │   ├── departamentos_controller.rb
-│   │   └── unidades_academicas_controller.rb
-│   ├── services/
-│   │   └── api_client.rb                 # Wrapper Faraday para o backend
-│   ├── helpers/
-│   │   └── application_helper.rb         # status_badge, active_nav?, etc.
-│   └── views/
-│       ├── layouts/application.html.erb  # Layout c/ sidebar + topbar
-│       ├── dashboard/index.html.erb      # Gráficos Chart.js
-│       ├── tccs/{index,new,edit}.html.erb
-│       ├── alunos/index.html.erb
-│       ├── professores/index.html.erb
-│       ├── cursos/index.html.erb
-│       ├── departamentos/index.html.erb
-│       └── unidades_academicas/index.html.erb
-├── config/
-│   ├── routes.rb
-│   ├── application.rb
-│   └── environments/
-├── Gemfile
-└── README.md
-```
-
----
 
 ## Dependências Principais
 
