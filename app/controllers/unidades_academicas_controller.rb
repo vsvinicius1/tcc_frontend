@@ -1,8 +1,16 @@
 class UnidadesAcademicasController < ApplicationController
   def index
-    params_api = {}
-    params_api[:search] = params[:search] if params[:search].present?
-    @unidades_academicas = ApiClient.unidades_academicas(params_api) || []
-    @search              = params[:search]
+    @unidades_academicas = ApiClient.unidades_academicas || []
+
+    if params[:search].present?
+      termo = params[:search].downcase
+
+      @unidades_academicas = @unidades_academicas.select do |ua|
+        ua["nome"]&.downcase&.include?(termo) ||
+        ua["sigla"]&.downcase&.include?(termo)
+      end
+    end
+
+    @search = params[:search]
   end
 end
