@@ -7,6 +7,11 @@ class TccsController < ApplicationController
     @tccs   = ApiClient.tccs(params_api) || []
     @search = params[:search]
     @status_filtro = params[:status]
+    
+    # Filtrar por status localmente
+    if @status_filtro.present?
+      @tccs = @tccs.select { |tcc| tcc["status"].to_s == @status_filtro.to_s }
+    end
   end
 
   def new
@@ -24,7 +29,13 @@ class TccsController < ApplicationController
       orientador:     params[:orientador_id],
       curso:          params[:curso_id],
       status:         params[:status] || "0",
-      data_entrega:   params[:data_entrega]
+      data_entrega:   params[:data_entrega],
+      palavras_chave:   params[:palavras_chave],
+      tipo:             params[:tipo],
+      idioma:           params[:idioma],
+      presidente:       params[:presidente_id],
+      primeiro_membro:  params[:primeiro_membro_id],
+      segundo_membro:   params[:segundo_membro_id]
     }
 
     if arquivo.present?

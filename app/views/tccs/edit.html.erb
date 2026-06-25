@@ -123,6 +123,56 @@
             </div>
           </div>
 
+          <!-- Palavras-chave + Tipo + Idioma -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Palavras-chave <span class="text-danger">*</span></label>
+              <%= text_field_tag :palavras_chave, params[:palavras_chave] || @tcc["palavras_chave"], class: "form-control" %>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Tipo <span class="text-danger">*</span></label>
+              <%= select_tag :tipo, 
+                  options_for_select([
+                    ["Monografia", "MONOGRAFIA"],
+                    ["Relatório de Estágio", "RELATORIO_ESTAGIO"],
+                    ["Relatório Técnico", "RELATORIO_TECNICO"],
+                    ["Artigo", "ARTIGO"]
+                  ], params[:tipo] || @tcc["tipo"]), 
+                  { prompt: "Selecione…", class: "form-select" } %>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Idioma <span class="text-danger">*</span></label>
+              <%= select_tag :idioma, 
+                  options_for_select([
+                    ["Português", "PT"],
+                    ["Inglês", "EN"]
+                  ], params[:idioma] || @tcc["idioma"]), 
+                  { prompt: "Selecione…", class: "form-select" } %>
+            </div>
+          </div>
+
+          <!-- Banca Examinadora (Presidente + Membros) -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Presidente da Banca <span class="text-danger">*</span></label>
+              <%= select_tag :presidente_id,
+                  options_for_select(@professores.map { |p| [p["nome"] || "#{p["first_name"]} #{p["last_name"]}".strip, p["id"].to_s] }, params[:presidente_id] || @tcc["presidente"]&.to_s),
+                  { prompt: "Selecione…", class: "form-select" } %>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Primeiro Membro <span class="text-danger">*</span></label>
+              <%= select_tag :primeiro_membro_id,
+                  options_for_select(@professores.map { |p| [p["nome"] || "#{p["first_name"]} #{p["last_name"]}".strip, p["id"].to_s] }, params[:primeiro_membro_id] || @tcc["primeiro_membro"]&.to_s),
+                  { prompt: "Selecione…", class: "form-select" } %>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Segundo Membro <span class="text-danger">*</span></label>
+              <%= select_tag :segundo_membro_id,
+                  options_for_select(@professores.map { |p| [p["nome"] || "#{p["first_name"]} #{p["last_name"]}".strip, p["id"].to_s] }, params[:segundo_membro_id] || @tcc["segundo_membro"]&.to_s),
+                  { prompt: "Selecione…", class: "form-select" } %>
+            </div>
+          </div>
+
           <!-- Arquivo atual -->
           <% if @tcc["arquivo"].present? %>
             <div class="mb-3 p-3" style="background:#F8FAFC; border-radius:8px; border:1px solid var(--border)">

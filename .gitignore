@@ -1,0 +1,6 @@
+# Ignorar pastas de temporários e logs locais
+/tmp/
+/log/
+
+# Ignorar pastas do bundler e dependências locais
+/.bundle/
