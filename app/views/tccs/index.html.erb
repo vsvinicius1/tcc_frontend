@@ -59,9 +59,6 @@
             <th>#</th>
             <th>Título</th>
             <th>Aluno</th>
-            <th>Orientador</th>
-            <th>Curso</th>
-            <th>Entrega</th>
             <th>Status</th>
             <th>Arquivo</th>
             <th>Ações</th>
@@ -81,15 +78,9 @@
                   </div>
                 <% end %>
               </td>
-              <td><%= tcc["aluno_nome"] || "—" %></td>
-              <td><%= tcc["orientador_nome"] || "—" %></td>
-              <td><%= tcc["curso_nome"] || "—" %></td>
-              <td style="white-space:nowrap">
-                <% if tcc["data_entrega"].present? %>
-                  <%= Date.parse(tcc["data_entrega"]).strftime("%d/%m/%Y") rescue tcc["data_entrega"] %>
-                <% else %>
-                  <span class="text-muted">—</span>
-                <% end %>
+              <td>
+                <% aluno = @alunos.find { |a| a["id"] == tcc["aluno"] } %>
+                <%= aluno ? aluno["nome"] : "—" %>
               </td>
               <td><%= status_badge(tcc["status"]) %></td>
               <td>

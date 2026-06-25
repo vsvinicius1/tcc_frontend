@@ -5,6 +5,7 @@ class TccsController < ApplicationController
     params_api[:status]  = params[:status]  if params[:status].present?
 
     @tccs   = ApiClient.tccs(params_api) || []
+    @alunos = ApiClient.alunos || []
     @search = params[:search]
     @status_filtro = params[:status]
     

@@ -39,7 +39,6 @@
             <th>#</th>
             <th>Nome</th>
             <th>Sigla</th>
-            <th>Endereço / Localização</th>
           </tr>
         </thead>
         <tbody>
@@ -65,10 +64,6 @@
                 <% else %>
                   <span class="text-muted">—</span>
                 <% end %>
-              </td>
-              <td class="text-muted">
-                <%= ua["endereco"] || ua["localizacao"] || ua["campus"] || "—" %>
-              </td>
             </tr>
           <% end %>
         </tbody>

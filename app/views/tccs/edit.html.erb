@@ -56,7 +56,7 @@
 
           <!-- Resumo -->
           <div class="mb-3">
-            <label class="form-label">Resumo</label>
+            <label class="form-label">Resumo <span class="text-danger">*</span></label>
             <%= f.text_area :resumo, class: "form-control", rows: 4,
                 value: params[:resumo] || @tcc["resumo"] %>
           </div>

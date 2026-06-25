@@ -44,7 +44,6 @@
             <th>#</th>
             <th>Nome</th>
             <th>Matrícula</th>
-            <th>E-mail</th>
             <th>Curso</th>
           </tr>
         </thead>
@@ -65,7 +64,6 @@
                 </div>
               </td>
               <td class="text-muted"><%= aluno["matricula"] || "—" %></td>
-              <td class="text-muted"><%= aluno["email"] || "—" %></td>
               <td>
                 <% curso = @cursos.find { |c| c["id"] == aluno["curso"] } %>
                 <%= curso ? curso["nome"] : (aluno["curso_nome"] || "—") %>

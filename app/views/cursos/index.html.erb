@@ -38,25 +38,34 @@
           <tr>
             <th>#</th>
             <th>Nome do Curso</th>
-            <th>Departamento</th>
-            <th>Modalidade</th>
+            <th>Sigla</th>
+            <th>Código</th>
           </tr>
         </thead>
         <tbody>
           <% @cursos.each_with_index do |curso, i| %>
             <tr>
               <td class="text-muted" style="font-size:.78rem"><%= i + 1 %></td>
-              <td class="fw-500"><%= curso["nome"] %></td>
-              <td>
-                <% depto = @departamentos.find { |d| d["id"] == curso["departamento"] } %>
-                <%= depto ? depto["nome"] : (curso["departamento_nome"] || "—") %>
+
+              <td class="fw-500">
+                <%= curso["nome"] %>
               </td>
+
               <td>
-                <% modalidade = curso["modalidade"] || curso["turno"] %>
-                <% if modalidade.present? %>
-                  <span class="status-badge" style="background:#F0F4FF; color:#4338CA; font-size:.7rem">
-                    <%= modalidade %>
-                  </span>
+                <% if curso["sigla"].present? %>
+                  <code style="background:#F1F5F9; padding:2px 6px; border-radius:4px; font-size:.8rem">
+                    <%= curso["sigla"] %>
+                  </code>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+
+              <td>
+                <% if curso["codigo"].present? %>
+                  <code style="background:#F1F5F9; padding:2px 6px; border-radius:4px; font-size:.8rem">
+                    <%= curso["codigo"] %>
+                  </code>
                 <% else %>
                   <span class="text-muted">—</span>
                 <% end %>

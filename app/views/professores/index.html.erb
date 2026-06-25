@@ -43,8 +43,6 @@
           <tr>
             <th>#</th>
             <th>Nome</th>
-            <th>E-mail</th>
-            <th>Titulação</th>
             <th>Departamento</th>
           </tr>
         </thead>
@@ -65,17 +63,6 @@
                     </div>
                   </div>
                 </div>
-              </td>
-              <td class="text-muted"><%= prof["email"] || "—" %></td>
-              <td>
-                <% titulacao = prof["titulacao"] || prof["titulação"] %>
-                <% if titulacao.present? %>
-                  <span class="status-badge" style="background:#F0F4FF; color:#4338CA; font-size:.7rem">
-                    <%= titulacao %>
-                  </span>
-                <% else %>
-                  <span class="text-muted">—</span>
-                <% end %>
               </td>
               <td>
                 <% depto = @departamentos.find { |d| d["id"] == prof["departamento"] } %>
