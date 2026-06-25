@@ -46,17 +46,7 @@ rails server
 # 5. Acesse no navegador
 #    http://localhost:3000
 ```
-
-### Apontar para outro backend
-
-Se a API estiver em outro endereço, use a variável de ambiente:
-
-```bash
-API_BASE_URL=http://meu-servidor:8000/api rails server
 ```
-
----
-
 ## Estrutura do Projeto
 
 ```
