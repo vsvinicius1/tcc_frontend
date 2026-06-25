@@ -117,9 +117,19 @@
                   { class: "form-select", id: "statusSelect" } %>
             </div>
             <div class="col-md-3">
-              <label class="form-label">Data de Entrega</label>
-              <%= f.date_field :data_entrega, class: "form-control",
-                  value: @tcc["data_entrega"] %>
+              <label class="form-label">Semestre da Defesa <span class="text-danger">*</span></label>
+              <%= f.select :semestre_letivo_defesa,
+                  options_for_select([
+                    "2020/1", "2020/2", 
+                    "2021/1", "2021/2", 
+                    "2022/1", "2022/2", 
+                    "2023/1", "2023/2", 
+                    "2024/1", "2024/2", 
+                    "2025/1", "2025/2", 
+                    "2026/1"
+                  ], @tcc["semestre_letivo_defesa"] || "2026/1"),
+                  { prompt: "Selecione o semestre…" },
+                  { class: "form-select" } %>
             </div>
           </div>
 

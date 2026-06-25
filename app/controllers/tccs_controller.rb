@@ -30,7 +30,7 @@ class TccsController < ApplicationController
       orientador:     params[:orientador_id],
       curso:          params[:curso_id],
       status:         params[:status] || "0",
-      data_entrega:   params[:data_entrega],
+      semestre_letivo_defesa: params[:semestre_letivo_defesa],
       palavras_chave:   params[:palavras_chave],
       tipo:             params[:tipo],
       idioma:           params[:idioma],
@@ -77,7 +77,7 @@ class TccsController < ApplicationController
       orientador:   params[:orientador_id],
       curso:        params[:curso_id],
       status:       params[:status],
-      data_entrega: params[:data_entrega]
+      semestre_letivo_defesa: params[:semestre_letivo_defesa]
     }
 
     if arquivo.present?
