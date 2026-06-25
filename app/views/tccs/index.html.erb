@@ -1,0 +1,120 @@
+<% content_for :title, "TCCs" %>
+<% content_for :topbar_title, "Trabalhos de Conclusão de Curso" %>
+
+<div class="page-header">
+  <h1 class="page-title">TCCs</h1>
+  <%= link_to new_tcc_path, class: "btn-primary-custom" do %>
+    <i class="bi bi-plus-lg me-1"></i> Novo TCC
+  <% end %>
+</div>
+
+<!-- Filtros -->
+<div class="card p-3 mb-4">
+  <%= form_with url: tccs_path, method: :get, local: true do |f| %>
+    <div class="search-bar">
+      <div class="search-input-wrap" style="flex:2">
+        <i class="bi bi-search"></i>
+        <%= f.text_field :search, value: @search, placeholder: "Buscar por título, aluno ou orientador…",
+            class: "form-control" %>
+      </div>
+
+      <div style="min-width:180px">
+        <%= f.select :status,
+            options_for_select([
+              ["Todos os status", ""],
+              ["Em Elaboração",   "0"],
+              ["Enviado",         "1"],
+              ["Aprovado",        "2"],
+              ["Reprovado",       "3"]
+            ], @status_filtro),
+            {}, { class: "form-select" } %>
+      </div>
+
+      <button type="submit" class="btn-primary-custom">
+        <i class="bi bi-funnel me-1"></i> Filtrar
+      </button>
+      <% if @search.present? || @status_filtro.present? %>
+        <%= link_to tccs_path, class: "btn-outline-custom" do %>
+          <i class="bi bi-x-lg"></i> Limpar
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Tabela de TCCs -->
+<div class="card table-card">
+  <% if @tccs.empty? %>
+    <div class="empty-state">
+      <i class="bi bi-file-earmark-x"></i>
+      <p>Nenhum TCC encontrado.<br>
+        <%= link_to "Cadastrar novo TCC", new_tcc_path, style: "color:#2F7AEA" %>
+      </p>
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Título</th>
+            <th>Aluno</th>
+            <th>Orientador</th>
+            <th>Curso</th>
+            <th>Entrega</th>
+            <th>Status</th>
+            <th>Arquivo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @tccs.each_with_index do |tcc, i| %>
+            <tr>
+              <td class="text-muted" style="font-size:.78rem"><%= i + 1 %></td>
+              <td>
+                <div style="font-weight:500; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">
+                  <%= tcc["titulo"] %>
+                </div>
+                <% if tcc["resumo"].present? %>
+                  <div style="font-size:.75rem; color:#64748B; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">
+                    <%= tcc["resumo"] %>
+                  </div>
+                <% end %>
+              </td>
+              <td><%= tcc["aluno_nome"] || "—" %></td>
+              <td><%= tcc["orientador_nome"] || "—" %></td>
+              <td><%= tcc["curso_nome"] || "—" %></td>
+              <td style="white-space:nowrap">
+                <% if tcc["data_entrega"].present? %>
+                  <%= Date.parse(tcc["data_entrega"]).strftime("%d/%m/%Y") rescue tcc["data_entrega"] %>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td><%= status_badge(tcc["status"]) %></td>
+              <td>
+                <% if tcc["arquivo"].present? %>
+                  <%= link_to tcc["arquivo"], target: "_blank", rel: "noopener",
+                      title: "Baixar / visualizar PDF",
+                      style: "color:#2F7AEA; font-size:1.2rem" do %>
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                  <% end %>
+                <% else %>
+                  <span class="text-muted" style="font-size:.78rem">sem arquivo</span>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to edit_tcc_path(tcc["id"]), class: "btn-outline-custom", style: "padding:5px 10px; font-size:.8rem" do %>
+                  <i class="bi bi-pencil"></i> Editar
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div style="padding: 10px 16px; font-size:.78rem; color:#64748B; border-top:1px solid var(--border)">
+      <%= @tccs.size %> registro(s) encontrado(s)
+    </div>
+  <% end %>
+</div>

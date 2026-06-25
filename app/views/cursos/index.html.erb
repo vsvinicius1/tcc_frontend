@@ -1,0 +1,70 @@
+<% content_for :title, "Cursos" %>
+<% content_for :topbar_title, "Cursos Cadastrados" %>
+
+<div class="page-header">
+  <h1 class="page-title">Cursos</h1>
+  <span class="badge bg-primary rounded-pill px-3" style="font-size:.8rem">
+    <%= @cursos.size %> registros
+  </span>
+</div>
+
+<!-- Search -->
+<div class="card p-3 mb-4">
+  <%= form_with url: cursos_path, method: :get, local: true do |f| %>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <%= f.text_field :search, value: @search, placeholder: "Buscar por nome do curso…",
+            class: "form-control" %>
+      </div>
+      <button type="submit" class="btn-primary-custom">Buscar</button>
+      <% if @search.present? %>
+        <%= link_to cursos_path, class: "btn-outline-custom" do %><i class="bi bi-x-lg"></i><% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card table-card">
+  <% if @cursos.empty? %>
+    <div class="empty-state">
+      <i class="bi bi-book"></i>
+      <p>Nenhum curso encontrado.</p>
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome do Curso</th>
+            <th>Departamento</th>
+            <th>Modalidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @cursos.each_with_index do |curso, i| %>
+            <tr>
+              <td class="text-muted" style="font-size:.78rem"><%= i + 1 %></td>
+              <td class="fw-500"><%= curso["nome"] %></td>
+              <td>
+                <% depto = @departamentos.find { |d| d["id"] == curso["departamento"] } %>
+                <%= depto ? depto["nome"] : (curso["departamento_nome"] || "—") %>
+              </td>
+              <td>
+                <% modalidade = curso["modalidade"] || curso["turno"] %>
+                <% if modalidade.present? %>
+                  <span class="status-badge" style="background:#F0F4FF; color:#4338CA; font-size:.7rem">
+                    <%= modalidade %>
+                  </span>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

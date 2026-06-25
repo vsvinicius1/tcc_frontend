@@ -1,0 +1,181 @@
+<% content_for :title, "Editar TCC" %>
+<% content_for :topbar_title, "Editar TCC" %>
+
+<div class="page-header">
+  <h1 class="page-title">Editar TCC</h1>
+  <%= link_to tccs_path, class: "btn-outline-custom" do %>
+    <i class="bi bi-arrow-left"></i> Voltar
+  <% end %>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <!-- Status atual highlight -->
+    <div class="card p-3 mb-3 d-flex flex-row align-items-center gap-3" style="border-left: 4px solid #2F7AEA">
+      <div>
+        <div style="font-size:.72rem; color:#64748B; font-weight:600; text-transform:uppercase; letter-spacing:.5px">
+          Status Atual
+        </div>
+        <div class="mt-1"><%= status_badge(@tcc["status"]) %></div>
+      </div>
+      <div style="margin-left:auto; font-size:.8rem; color:#64748B">
+        <i class="bi bi-hash"></i> ID <%= @tcc["id"] %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-pencil-square me-2" style="color:#2F7AEA"></i>
+        Atualizar Dados do TCC
+      </div>
+      <div class="p-4">
+        <%= form_with url: tcc_path(@tcc["id"]), method: :patch, multipart: true, local: true do |f| %>
+
+          <!-- Erros -->
+          <% if defined?(@erros) && @erros.any? %>
+            <div class="flash-alert mb-3">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <div>
+                <strong>Corrija os erros:</strong>
+                <ul class="mb-0 mt-1">
+                  <% @erros.each do |campo, msgs| %>
+                    <li><%= campo %>: <%= Array(msgs).join(", ") %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Título -->
+          <div class="mb-3">
+            <label class="form-label">Título <span class="text-danger">*</span></label>
+            <%= f.text_field :titulo, class: "form-control",
+                value: params[:titulo] || @tcc["titulo"] %>
+          </div>
+
+          <!-- Resumo -->
+          <div class="mb-3">
+            <label class="form-label">Resumo</label>
+            <%= f.text_area :resumo, class: "form-control", rows: 4,
+                value: params[:resumo] || @tcc["resumo"] %>
+          </div>
+
+          <!-- Aluno + Orientador -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Aluno <span class="text-danger">*</span></label>
+              <% aluno_id = @tcc["aluno"]&.to_s %>
+              <%= f.select :aluno_id,
+                  options_for_select(
+                    @alunos.map { |a| [a["nome"] || "#{a["first_name"]} #{a["last_name"]}".strip, a["id"].to_s] },
+                    aluno_id
+                  ),
+                  { prompt: "Selecione…" },
+                  { class: "form-select" } %>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Orientador <span class="text-danger">*</span></label>
+              <% orientador_id = @tcc["orientador"]&.to_s %>
+              <%= f.select :orientador_id,
+                  options_for_select(
+                    @professores.map { |p| [p["nome"] || "#{p["first_name"]} #{p["last_name"]}".strip, p["id"].to_s] },
+                    orientador_id
+                  ),
+                  { prompt: "Selecione…" },
+                  { class: "form-select" } %>
+            </div>
+          </div>
+
+          <!-- Curso + Status + Data -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-5">
+              <label class="form-label">Curso <span class="text-danger">*</span></label>
+              <% curso_id = @tcc["curso"]&.to_s %>
+              <%= f.select :curso_id,
+                  options_for_select(
+                    @cursos.map { |c| [c["nome"], c["id"].to_s] },
+                    curso_id
+                  ),
+                  { prompt: "Selecione…" },
+                  { class: "form-select" } %>
+            </div>
+            <div class="col-md-4">
+              <!-- Status com cor visual -->
+              <label class="form-label">
+                <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background: var(--s-elaboracao); margin-right:5px"></span>
+                Status <span class="text-danger">*</span>
+              </label>
+              <%= f.select :status,
+                  options_for_select([
+                    ["Em Elaboração", "0"],
+                    ["Enviado",       "1"],
+                    ["Aprovado",      "2"],
+                    ["Reprovado",     "3"]
+                  ], @tcc["status"].to_s),
+                  {},
+                  { class: "form-select", id: "statusSelect" } %>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Data de Entrega</label>
+              <%= f.date_field :data_entrega, class: "form-control",
+                  value: @tcc["data_entrega"] %>
+            </div>
+          </div>
+
+          <!-- Arquivo atual -->
+          <% if @tcc["arquivo"].present? %>
+            <div class="mb-3 p-3" style="background:#F8FAFC; border-radius:8px; border:1px solid var(--border)">
+              <div style="font-size:.8rem; color:#64748B; margin-bottom:6px">
+                <i class="bi bi-paperclip"></i> Arquivo atual:
+              </div>
+              <%= link_to @tcc["arquivo"], target: "_blank", rel: "noopener",
+                  style: "color:#2F7AEA; font-size:.875rem; display:flex; align-items:center; gap:6px" do %>
+                <i class="bi bi-file-earmark-pdf-fill" style="font-size:1.1rem"></i>
+                Visualizar / Baixar PDF
+              <% end %>
+            </div>
+          <% end %>
+
+          <!-- Upload novo arquivo -->
+          <div class="mb-4">
+            <label class="form-label">
+              <%= @tcc["arquivo"].present? ? "Substituir arquivo PDF" : "Enviar arquivo PDF" %>
+            </label>
+            <div class="file-upload-area">
+              <input type="file" name="arquivo" accept=".pdf">
+              <i class="bi bi-cloud-arrow-up-fill" style="color:#2F7AEA"></i>
+              <p class="file-name">
+                <%= @tcc["arquivo"].present? ? "Clique para substituir o PDF" : "Clique ou arraste o PDF aqui" %>
+              </p>
+              <p style="color:#94A3B8; font-size:.72rem">Somente arquivos .pdf</p>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="d-flex gap-2 justify-content-end">
+            <%= link_to tccs_path, class: "btn-outline-custom" do %>
+              Cancelar
+            <% end %>
+            <button type="submit" class="btn-primary-custom">
+              <i class="bi bi-save me-1"></i> Salvar Alterações
+            </button>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+<script>
+  // Update status dot color on change
+  const sel = document.getElementById("statusSelect");
+  const colors = { "0":"#3B82F6","1":"#F59E0B","2":"#16A34A","3":"#DC2626" };
+  const dot = sel.previousElementSibling.querySelector("span");
+  function updateDot() { if(dot) dot.style.background = colors[sel.value] || "#94A3B8"; }
+  sel && sel.addEventListener("change", updateDot);
+  updateDot();
+</script>
+<% end %>

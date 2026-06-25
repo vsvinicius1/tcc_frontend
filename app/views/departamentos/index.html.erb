@@ -1,0 +1,70 @@
+<% content_for :title, "Departamentos" %>
+<% content_for :topbar_title, "Departamentos" %>
+
+<div class="page-header">
+  <h1 class="page-title">Departamentos</h1>
+  <span class="badge bg-primary rounded-pill px-3" style="font-size:.8rem">
+    <%= @departamentos.size %> registros
+  </span>
+</div>
+
+<!-- Search -->
+<div class="card p-3 mb-4">
+  <%= form_with url: departamentos_path, method: :get, local: true do |f| %>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <%= f.text_field :search, value: @search, placeholder: "Buscar por nome do departamento…",
+            class: "form-control" %>
+      </div>
+      <button type="submit" class="btn-primary-custom">Buscar</button>
+      <% if @search.present? %>
+        <%= link_to departamentos_path, class: "btn-outline-custom" do %><i class="bi bi-x-lg"></i><% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card table-card">
+  <% if @departamentos.empty? %>
+    <div class="empty-state">
+      <i class="bi bi-building"></i>
+      <p>Nenhum departamento encontrado.</p>
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome do Departamento</th>
+            <th>Sigla</th>
+            <th>Unidade Acadêmica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @departamentos.each_with_index do |depto, i| %>
+            <tr>
+              <td class="text-muted" style="font-size:.78rem"><%= i + 1 %></td>
+              <td class="fw-500"><%= depto["nome"] %></td>
+              <td>
+                <% sigla = depto["sigla"] || depto["abreviacao"] %>
+                <% if sigla.present? %>
+                  <code style="background:#F1F5F9; padding:2px 6px; border-radius:4px; font-size:.8rem">
+                    <%= sigla %>
+                  </code>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td>
+                <% ua = @unidades_academicas.find { |u| u["id"] == depto["unidade_academica"] } %>
+                <%= ua ? ua["nome"] : (depto["unidade_academica_nome"] || "—") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

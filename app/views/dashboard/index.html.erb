@@ -1,0 +1,246 @@
+<% content_for :title, "Dashboard" %>
+<% content_for :topbar_title, "Dashboard — Visão Geral" %>
+
+<!-- Stat cards row -->
+<div class="page-header">
+  <h1 class="page-title">Dashboard</h1>
+  <%= link_to new_tcc_path, class: "btn-primary-custom" do %>
+    <i class="bi bi-plus-lg me-1"></i> Novo TCC
+  <% end %>
+</div>
+
+<div class="row g-3 mb-4">
+  <!-- Total de TCCs -->
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="stat-label">Total de TCCs</div>
+          <div class="stat-value"><%= @total_geral %></div>
+        </div>
+        <div class="stat-icon" style="background:#EBF3FF; color:#2F7AEA">
+          <i class="bi bi-file-earmark-text"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aprovados -->
+  <% aprovados = @por_status["Aprovado"].to_i %>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="stat-label">Aprovados</div>
+          <div class="stat-value" style="color: #16A34A"><%= aprovados %></div>
+        </div>
+        <div class="stat-icon" style="background:#F0FDF4; color:#16A34A">
+          <i class="bi bi-check-circle"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enviados -->
+  <% enviados = @por_status["Enviado"].to_i %>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="stat-label">Enviados</div>
+          <div class="stat-value" style="color: #D97706"><%= enviados %></div>
+        </div>
+        <div class="stat-icon" style="background:#FFFBEB; color:#D97706">
+          <i class="bi bi-send"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reprovados -->
+  <% reprovados = @por_status["Reprovado"].to_i %>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="stat-label">Reprovados</div>
+          <div class="stat-value" style="color: #DC2626"><%= reprovados %></div>
+        </div>
+        <div class="stat-icon" style="background:#FEF2F2; color:#DC2626">
+          <i class="bi bi-x-circle"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts row -->
+<div class="row g-3 mb-4">
+  <!-- Donut: por status -->
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center gap-2">
+        <i class="bi bi-pie-chart-fill" style="color:#2F7AEA"></i>
+        TCCs por Status
+      </div>
+      <div class="p-4 d-flex justify-content-center">
+        <% if @por_status.empty? %>
+          <div class="empty-state">
+            <i class="bi bi-pie-chart"></i>
+            <p>Sem dados disponíveis</p>
+          </div>
+        <% else %>
+          <canvas id="chartStatus" style="max-width:280px; max-height:280px"></canvas>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bar: por orientador -->
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center gap-2">
+        <i class="bi bi-bar-chart-fill" style="color:#2F7AEA"></i>
+        TCCs por Orientador
+      </div>
+      <div class="p-4">
+        <% if @por_orientador.empty? %>
+          <div class="empty-state">
+            <i class="bi bi-bar-chart"></i>
+            <p>Sem dados disponíveis</p>
+          </div>
+        <% else %>
+          <canvas id="chartOrientador" style="max-height:260px"></canvas>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent TCCs table -->
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <span><i class="bi bi-clock-history me-2" style="color:#2F7AEA"></i>TCCs Recentes</span>
+    <%= link_to "Ver todos →", tccs_path, style: "font-size:.8rem; color: #2F7AEA; text-decoration:none" %>
+  </div>
+  <% if @ultimos_tccs.empty? %>
+    <div class="empty-state">
+      <i class="bi bi-inbox"></i>
+      <p>Nenhum TCC cadastrado ainda.<br>
+        <%= link_to "Cadastrar o primeiro TCC", new_tcc_path, style: "color:#2F7AEA" %>
+      </p>
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Aluno</th>
+            <th>Orientador</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @ultimos_tccs.each do |tcc| %>
+            <tr>
+              <td class="fw-500"><%= tcc["titulo"] %></td>
+              <td class="text-muted"><%= tcc["aluno_nome"] || "—" %></td>
+              <td class="text-muted"><%= tcc["orientador_nome"] || "—" %></td>
+              <td><%= status_badge(tcc["status"]) %></td>
+              <td>
+                <%= link_to edit_tcc_path(tcc["id"]), class: "btn-outline-custom btn-sm" do %>
+                  <i class="bi bi-pencil"></i> Editar
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
+
+<% content_for :scripts do %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const STATUS_COLORS = {
+    "Em Elaboração": "#3B82F6",
+    "Enviado":       "#F59E0B",
+    "Aprovado":      "#16A34A",
+    "Reprovado":     "#DC2626"
+  };
+
+  // ── Donut por status ──────────────────────────────
+  <% unless @por_status.empty? %>
+  (function(){
+    const labels = <%= raw @por_status.keys.to_json %>;
+    const data   = <%= raw @por_status.values.to_json %>;
+    const colors = labels.map(l => STATUS_COLORS[l] || "#94A3B8");
+
+    new Chart(document.getElementById("chartStatus"), {
+      type: "doughnut",
+      data: {
+        labels,
+        datasets: [{ data, backgroundColor: colors, borderWidth: 3, borderColor: "#fff", hoverOffset: 6 }]
+      },
+      options: {
+        cutout: "62%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { font: { family: "Inter", size: 12 }, padding: 14, boxWidth: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${ctx.label}: ${ctx.raw} TCC(s)`
+            }
+          }
+        }
+      }
+    });
+  })();
+  <% end %>
+
+  // ── Bar por orientador ────────────────────────────
+  <% unless @por_orientador.empty? %>
+  (function(){
+    const labels = <%= raw @por_orientador.keys.to_json %>;
+    const data   = <%= raw @por_orientador.values.to_json %>;
+
+    new Chart(document.getElementById("chartOrientador"), {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "TCCs",
+          data,
+          backgroundColor: "#2F7AEA",
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.raw} TCC(s)` } }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: { family: "Inter", size: 11 }, color: "#64748B" }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, font: { family: "Inter", size: 11 }, color: "#64748B" },
+            grid: { color: "#F1F5F9" }
+          }
+        }
+      }
+    });
+  })();
+  <% end %>
+</script>
+<% end %>

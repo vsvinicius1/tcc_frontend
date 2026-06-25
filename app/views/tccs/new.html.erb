@@ -1,0 +1,130 @@
+<% content_for :title, "Novo TCC" %>
+<% content_for :topbar_title, "Cadastrar Novo TCC" %>
+
+<div class="page-header">
+  <h1 class="page-title">Cadastrar TCC</h1>
+  <%= link_to tccs_path, class: "btn-outline-custom" do %>
+    <i class="bi bi-arrow-left"></i> Voltar
+  <% end %>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-file-earmark-plus me-2" style="color:#2F7AEA"></i>
+        Informações do Trabalho
+      </div>
+      <div class="p-4">
+        <%= form_with url: tccs_path, method: :post, multipart: true, local: true do |f| %>
+
+          <!-- Erros da API -->
+          <% if defined?(@erros) && @erros.any? %>
+            <div class="flash-alert mb-3">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <div>
+                <strong>Corrija os erros:</strong>
+                <ul class="mb-0 mt-1">
+                  <% @erros.each do |campo, msgs| %>
+                    <li><%= campo.capitalize %>: <%= Array(msgs).join(", ") %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Título -->
+          <div class="mb-3">
+            <label class="form-label">Título <span class="text-danger">*</span></label>
+            <%= f.text_field :titulo, class: "form-control", placeholder: "Título completo do trabalho",
+                value: params[:titulo] %>
+          </div>
+
+          <!-- Resumo -->
+          <div class="mb-3">
+            <label class="form-label">Resumo</label>
+            <%= f.text_area :resumo, class: "form-control", rows: 4,
+                placeholder: "Breve descrição do trabalho…",
+                value: params[:resumo] %>
+          </div>
+
+          <!-- Aluno + Orientador -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Aluno <span class="text-danger">*</span></label>
+              <%= f.select :aluno_id,
+                  options_for_select(
+                    @alunos.map { |a| [a["nome"] || "#{a["first_name"]} #{a["last_name"]}".strip, a["id"]] },
+                    params[:aluno_id]
+                  ),
+                  { prompt: "Selecione o aluno…" },
+                  { class: "form-select" } %>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Orientador <span class="text-danger">*</span></label>
+              <%= f.select :orientador_id,
+                  options_for_select(
+                    @professores.map { |p| [p["nome"] || "#{p["first_name"]} #{p["last_name"]}".strip, p["id"]] },
+                    params[:orientador_id]
+                  ),
+                  { prompt: "Selecione o orientador…" },
+                  { class: "form-select" } %>
+            </div>
+          </div>
+
+          <!-- Curso + Status + Data -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-5">
+              <label class="form-label">Curso <span class="text-danger">*</span></label>
+              <%= f.select :curso_id,
+                  options_for_select(
+                    @cursos.map { |c| [c["nome"], c["id"]] },
+                    params[:curso_id]
+                  ),
+                  { prompt: "Selecione o curso…" },
+                  { class: "form-select" } %>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Status</label>
+              <%= f.select :status,
+                  options_for_select([
+                    ["Em Elaboração", "0"],
+                    ["Enviado",       "1"],
+                    ["Aprovado",      "2"],
+                    ["Reprovado",     "3"]
+                  ], params[:status] || "0"),
+                  {},
+                  { class: "form-select" } %>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Data de Entrega</label>
+              <%= f.date_field :data_entrega, class: "form-control", value: params[:data_entrega] %>
+            </div>
+          </div>
+
+          <!-- Upload de arquivo PDF -->
+          <div class="mb-4">
+            <label class="form-label">Arquivo PDF</label>
+            <div class="file-upload-area" id="uploadArea">
+              <input type="file" name="arquivo" accept=".pdf" id="pdfInput">
+              <i class="bi bi-cloud-arrow-up-fill" style="color:#2F7AEA"></i>
+              <p class="file-name">Clique ou arraste o PDF aqui</p>
+              <p style="color:#94A3B8; font-size:.72rem">Somente arquivos .pdf</p>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="d-flex gap-2 justify-content-end">
+            <%= link_to tccs_path, class: "btn-outline-custom" do %>
+              Cancelar
+            <% end %>
+            <button type="submit" class="btn-primary-custom">
+              <i class="bi bi-save me-1"></i> Cadastrar TCC
+            </button>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

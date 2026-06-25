@@ -1,0 +1,90 @@
+<% content_for :title, "Professores" %>
+<% content_for :topbar_title, "Professores Cadastrados" %>
+
+<div class="page-header">
+  <h1 class="page-title">Professores</h1>
+  <span class="badge bg-primary rounded-pill px-3" style="font-size:.8rem">
+    <%= @professores.size %> registros
+  </span>
+</div>
+
+<!-- Search -->
+<div class="card p-3 mb-4">
+  <%= form_with url: professores_path, method: :get, local: true do |f| %>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <%= f.text_field :search, value: @search, placeholder: "Buscar por nome, e-mail, departamento…",
+            class: "form-control" %>
+      </div>
+      <button type="submit" class="btn-primary-custom">
+        <i class="bi bi-search me-1"></i> Buscar
+      </button>
+      <% if @search.present? %>
+        <%= link_to professores_path, class: "btn-outline-custom" do %>
+          <i class="bi bi-x-lg"></i> Limpar
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Tabela -->
+<div class="card table-card">
+  <% if @professores.empty? %>
+    <div class="empty-state">
+      <i class="bi bi-person-workspace"></i>
+      <p>Nenhum professor encontrado.</p>
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Titulação</th>
+            <th>Departamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @professores.each_with_index do |prof, i| %>
+            <tr>
+              <td class="text-muted" style="font-size:.78rem"><%= i + 1 %></td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:32px; height:32px; border-radius:50%; background:#F0FDF4;
+                    display:flex; align-items:center; justify-content:center;
+                    font-weight:700; font-size:.75rem; color:#16A34A; flex-shrink:0">
+                    <%= (prof["nome"] || "#{prof["first_name"]} #{prof["last_name"]}".strip).first.upcase %>
+                  </div>
+                  <div>
+                    <div class="fw-500">
+                      <%= prof["nome"] || "#{prof["first_name"]} #{prof["last_name"]}".strip %>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-muted"><%= prof["email"] || "—" %></td>
+              <td>
+                <% titulacao = prof["titulacao"] || prof["titulação"] %>
+                <% if titulacao.present? %>
+                  <span class="status-badge" style="background:#F0F4FF; color:#4338CA; font-size:.7rem">
+                    <%= titulacao %>
+                  </span>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td>
+                <% depto = @departamentos.find { |d| d["id"] == prof["departamento"] } %>
+                <%= depto ? depto["nome"] : (prof["departamento_nome"] || "—") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

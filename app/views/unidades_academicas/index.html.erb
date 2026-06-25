@@ -1,0 +1,78 @@
+<% content_for :title, "Unidades Acadêmicas" %>
+<% content_for :topbar_title, "Unidades Acadêmicas" %>
+
+<div class="page-header">
+  <h1 class="page-title">Unidades Acadêmicas</h1>
+  <span class="badge bg-primary rounded-pill px-3" style="font-size:.8rem">
+    <%= @unidades_academicas.size %> registros
+  </span>
+</div>
+
+<!-- Search -->
+<div class="card p-3 mb-4">
+  <%= form_with url: unidades_academicas_path, method: :get, local: true do |f| %>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <%= f.text_field :search, value: @search, placeholder: "Buscar por nome da unidade…",
+            class: "form-control" %>
+      </div>
+      <button type="submit" class="btn-primary-custom">Buscar</button>
+      <% if @search.present? %>
+        <%= link_to unidades_academicas_path, class: "btn-outline-custom" do %><i class="bi bi-x-lg"></i><% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div class="card table-card">
+  <% if @unidades_academicas.empty? %>
+    <div class="empty-state">
+      <i class="bi bi-bank"></i>
+      <p>Nenhuma unidade acadêmica encontrada.</p>
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Sigla</th>
+            <th>Endereço / Localização</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @unidades_academicas.each_with_index do |ua, i| %>
+            <tr>
+              <td class="text-muted" style="font-size:.78rem"><%= i + 1 %></td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:36px; height:36px; border-radius:8px; background:#EBF3FF;
+                    display:flex; align-items:center; justify-content:center;
+                    font-size:1rem; color:#2F7AEA; flex-shrink:0">
+                    <i class="bi bi-bank2"></i>
+                  </div>
+                  <span class="fw-500"><%= ua["nome"] %></span>
+                </div>
+              </td>
+              <td>
+                <% sigla = ua["sigla"] || ua["abreviacao"] %>
+                <% if sigla.present? %>
+                  <code style="background:#F1F5F9; padding:2px 8px; border-radius:4px; font-size:.8rem">
+                    <%= sigla %>
+                  </code>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td class="text-muted">
+                <%= ua["endereco"] || ua["localizacao"] || ua["campus"] || "—" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
