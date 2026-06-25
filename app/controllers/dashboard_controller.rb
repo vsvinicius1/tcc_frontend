@@ -6,6 +6,7 @@ class DashboardController < ApplicationController
     @por_orientador = @stats["por_orientador"] || {}
 
     # Últimos 5 TCCs para a tabela rápida
-    @ultimos_tccs = ApiClient.tccs.first(5)
+    @ultimos_tccs = (ApiClient.tccs || []).reverse.first(5)
+
   end
 end
